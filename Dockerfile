@@ -1,3 +1,4 @@
+# Alpine v3.12
 FROM docker:20.10.2-git
 
 ENTRYPOINT /bin/sh
@@ -25,9 +26,24 @@ RUN apk add --no-cache \
     php7-xmlwriter==7.3.26-r0 \
     php7-zip==7.3.26-r0 \
     php7-pdo==7.3.26-r0 \
+    php7-mysqli==7.3.26-r0 \
+    php7-pdo_dblib=7.3.26-r0 \
+    php7-pdo_mysql==7.3.26-r0 \
     php7-xml==7.3.26-r0 \
-    php7-session==7.3.26-r0
+    php7-session==7.3.26-r0 \
+    php7-mbstring==7.3.26-r0
 
 RUN apk add --no-cache \
     nodejs==12.20.1-r0 \
     npm==12.20.1-r0
+
+RUN apk add --no-cache \
+    mariadb==10.4.15-r0 \
+    mariadb-client==10.4.15-r0
+
+RUN rm -f /var/cache/apk/*
+
+COPY my.cnf /etc/my.cnf
+RUN mkdir /run/mysqld
+RUN mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql
+RUN mysqladmin --no-defaults --port=3308 --user=root password 'root'
