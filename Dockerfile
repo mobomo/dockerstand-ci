@@ -1,6 +1,5 @@
+# Alpine v3.12
 FROM docker:20.10.2-git
-
-ENTRYPOINT /bin/sh
 
 RUN apk add --no-cache \
     py3-pip==20.1.1-r0 \
@@ -24,10 +23,27 @@ RUN apk add --no-cache \
     php7-ctype==7.3.26-r0 \
     php7-xmlwriter==7.3.26-r0 \
     php7-zip==7.3.26-r0 \
+    php7-bz2==7.3.26-r0 \
+    php7-exif==7.3.26-r0 \
     php7-pdo==7.3.26-r0 \
+    php7-mysqli==7.3.26-r0 \
+    php7-pdo_dblib=7.3.26-r0 \
+    php7-pdo_mysql==7.3.26-r0 \
     php7-xml==7.3.26-r0 \
-    php7-session==7.3.26-r0
+    php7-session==7.3.26-r0 \
+    php7-mbstring==7.3.26-r0 \
+    php7-iconv==7.3.26-r0\
+    php7-gmp==7.3.26-r0\
+    php7-xmlrpc==7.3.26-r0\
+    php7-soap==7.3.26-r0\
+    php7-xsl==7.3.26-r0\
+    php7-curl==7.3.26-r0\
+    php7-gd==7.3.26-r0
 
 RUN apk add --no-cache \
     nodejs==12.20.1-r0 \
     npm==12.20.1-r0
+
+RUN rm -f /var/cache/apk/*
+
+ENTRYPOINT ["/bin/sh"]
