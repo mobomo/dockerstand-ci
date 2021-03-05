@@ -9,7 +9,8 @@ RUN apk add --no-cache \
     libc-dev==0.7.2-r3 \
     python3-dev==3.8.5-r0 \
     libffi-dev==3.3-r2 \
-    openssl-dev==1.1.1i-r0
+    openssl-dev==1.1.1i-r0 \
+    jq==1.6-r1
 
 RUN pip3 install docker-compose==1.27.4
 
