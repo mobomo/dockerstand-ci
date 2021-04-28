@@ -15,7 +15,7 @@ RUN apk add --no-cache \
 
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
-RUN pip3 install docker-compose==1.27.4
+RUN pip3 install docker-compose
 
 RUN apk add --no-cache \
     composer \
