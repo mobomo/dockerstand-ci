@@ -1,5 +1,5 @@
 # Alpine v3.12
-FROM docker:20.10.2-git
+FROM docker:git
 
 RUN apk add --no-cache \
     py3-pip \
