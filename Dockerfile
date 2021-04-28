@@ -26,6 +26,7 @@ RUN apk add --no-cache \
     php7-simplexml \
     php7-ctype \
     php7-xmlwriter \
+    php7-xmlreader \
     php7-zip \
     php7-bz2 \
     php7-exif \
