@@ -8,8 +8,8 @@ A baseline image to be used as the base for all CI operations for Drupalstand ba
   * `docker build -f ./PHP7.4/Dockerfile ./PHP7.4 -t mobomo/drupalstand-ci:7.4-latest .`
   * `docker build -f ./PHP8.0/Dockerfile ./PHP8.0 -t mobomo/drupalstand-ci:8.0-latest .`
 * Tag the image with latest
-  * `docker tag drupalstand-ci:7.4:latest drupalstande-ci:7.4-<SEMVER>`
-  * `docker tag drupalstand-ci:8.0:latest drupalstande-ci:8.0-<SEMVER>`
+  * `docker tag drupalstand-ci:7.4-latest drupalstand-ci:7.4-<SEMVER>`
+  * `docker tag drupalstand-ci:8.0-latest drupalstand-ci:8.0-<SEMVER>`
 * Push to dockerhub
   * `docker push mobomo/drupalstand-ci:7.4-<SEMVER>`
   * `docker push mobomo/drupalstand-ci:7.4-latest`
