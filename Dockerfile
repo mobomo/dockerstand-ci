@@ -1,19 +1,20 @@
 # Alpine v3.12
 FROM docker:git
 
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
+
 RUN apk add --no-cache \
     py3-pip \
     bash \
     make \
     rsync \
     rust \
+    cargo \
     gcc \
     libc-dev \
     python3-dev \
     libffi-dev \
     openssl-dev
-
-ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
 RUN pip3 install docker-compose
 
@@ -43,7 +44,8 @@ RUN apk add --no-cache \
     php7-soap \
     php7-xsl \
     php7-curl \
-    php7-gd
+    php7-gd \
+    php7-sodium
 
 RUN apk add --no-cache \
     nodejs \
