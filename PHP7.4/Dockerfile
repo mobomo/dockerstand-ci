@@ -45,7 +45,9 @@ RUN apk add --no-cache \
     php7-xsl \
     php7-curl \
     php7-gd \
-    php7-sodium
+    php7-sodium \
+    mariadb-client
+
 
 RUN apk add --no-cache \
     nodejs \
