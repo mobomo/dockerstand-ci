@@ -3,6 +3,8 @@ FROM docker:git
 
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
+RUN apk update --no-cache
+
 RUN apk add --no-cache \
     py3-pip \
     bash \
@@ -13,15 +15,14 @@ RUN apk add --no-cache \
     gcc \
     libc-dev \
     python3-dev \
-    libffi-dev \
-    openssl-dev
+    openssl-dev \
+    libffi-dev
 
 RUN pip3 install docker-compose
 
 RUN apk add --no-cache \
-    composer \
-    patch \
     php8 \
+    php8-cli \
     php8-dom \
     php8-tokenizer \
     php8-simplexml \
@@ -43,14 +44,25 @@ RUN apk add --no-cache \
     php8-soap \
     php8-xsl \
     php8-curl \
+    php8-sodium \
     php8-gd \
-    php8-sodium
+    php8-phar
 
 RUN apk add --no-cache \
     nodejs \
     npm \
     curl \
-    jq
+    jq \
+    patch
+
+RUN ln -s /usr/bin/php8 /usr/bin/php
+
+RUN /usr/bin/php8 -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    /usr/bin/php8 -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+    /usr/bin/php8 composer-setup.php --install-dir=bin --filename=composer && \
+    /usr/bin/php8 -r "unlink('composer-setup.php');" \
+
+
 
 RUN rm -f /var/cache/apk/*
 
