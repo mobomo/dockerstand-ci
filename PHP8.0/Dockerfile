@@ -23,6 +23,7 @@ RUN pip3 install docker-compose
 RUN apk add --no-cache \
     php8 \
     php8-cli \
+    php8-fileinfo \
     php8-dom \
     php8-tokenizer \
     php8-simplexml \
