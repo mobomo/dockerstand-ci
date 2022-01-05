@@ -11,5 +11,3 @@ A baseline image to be used as the base for all CI operations for Drupalstand ba
   * 8.0-x.x.x
   * 7.4-x.x.x
 * Then `git push origin --tags` to push the tags to github and trigger the release builds on Docker Hub.
-
-
