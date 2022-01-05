@@ -68,7 +68,7 @@ RUN /usr/bin/php8 -r "copy('https://getcomposer.org/installer', 'composer-setup.
 RUN rm -f /var/cache/apk/*
 
 ## Install Robo.
-RUN curl -L "https://github.com/consolidation/Robo/releases/download/2.2.0/robo.phar" -o /tmp/robo.phar \
+RUN curl -L "https://github.com/consolidation/Robo/releases/download/3.0.7/robo.phar" -o /tmp/robo.phar \
     && chmod +x /tmp/robo.phar \
     && mv /tmp/robo.phar /usr/local/bin/robo
 
