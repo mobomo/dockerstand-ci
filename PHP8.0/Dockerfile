@@ -63,8 +63,6 @@ RUN /usr/bin/php8 -r "copy('https://getcomposer.org/installer', 'composer-setup.
     /usr/bin/php8 composer-setup.php --install-dir=bin --filename=composer && \
     /usr/bin/php8 -r "unlink('composer-setup.php');" \
 
-
-
 RUN rm -f /var/cache/apk/*
 
 ## Install Robo.
