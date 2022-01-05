@@ -4,15 +4,12 @@ A baseline image to be used as the base for all CI operations for Drupalstand ba
 
 ## Building and pushing
 
-* Create the new image:
-  * `docker build -f ./PHP7.4/Dockerfile ./PHP7.4 -t mobomo/drupalstand-ci:7.4-latest .`
-  * `docker build -f ./PHP8.0/Dockerfile ./PHP8.0 -t mobomo/drupalstand-ci:8.0-latest .`
-* Tag the image with latest
-  * `docker tag drupalstand-ci:7.4-latest drupalstand-ci:7.4-<SEMVER>`
-  * `docker tag drupalstand-ci:8.0-latest drupalstand-ci:8.0-<SEMVER>`
-* Push to dockerhub
-  * `docker push mobomo/drupalstand-ci:7.4-<SEMVER>`
-  * `docker push mobomo/drupalstand-ci:7.4-latest`
-  * `docker push mobomo/drupalstand-ci:8.0-<SEMVER>`
-  * `docker push mobomo/drupalstand-ci:8.0-latest`
+* On a successful merge/push to the `master` branch Docker Hub will automatically update the following tags as needed:
+  * 8.0-latest
+  * 7.4-latest
+* To tag a specific release use `git tag` using the following formats:
+  * 8.0-x.x.x
+  * 7.4-x.x.x
+* Then `git push origin --tags` to push the tags to github and trigger the release builds on Docker Hub.
+
 
