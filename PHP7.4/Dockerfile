@@ -29,11 +29,13 @@ RUN apk add --no-cache \
     php7-gd \
     php7-gmp \
     php7-iconv \
+    php7-json \
     php7-mbstring \
     php7-mysqli \
     php7-pdo \
     php7-pdo_dblib \
     php7-pdo_mysql \
+    php7-phar \
     php7-session \
     php7-simplexml \
     php7-soap \
@@ -56,10 +58,10 @@ RUN apk add --no-cache \
 
 RUN rm -f /var/cache/apk/*
 
-RUN /usr/bin/php7 -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    /usr/bin/php7 -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
-    /usr/bin/php7 composer-setup.php --install-dir=bin --filename=composer && \
-    /usr/bin/php7 -r "unlink('composer-setup.php');"
+RUN /usr/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    /usr/bin/php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+    /usr/bin/php composer-setup.php --install-dir=bin --filename=composer && \
+    /usr/bin/php -r "unlink('composer-setup.php');"
 
 ## Install Robo.
 RUN curl -L "https://github.com/consolidation/Robo/releases/download/3.0.7/robo.phar" -o /tmp/robo.phar \
