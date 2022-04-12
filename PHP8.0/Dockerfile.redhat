@@ -1,0 +1,86 @@
+# RedHat 8.5
+FROM redhat/ubi8:8.5
+
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
+
+RUN rpm --import https://rpms.remirepo.net/RPM-GPG-KEY-remi2018 \
+  && rpm --import https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-8 \
+  && dnf install -y https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm \
+  && dnf install -y https://rpms.remirepo.net/enterprise/remi-release-8.rpm \
+  && dnf module enable -y php:remi-8.0
+
+RUN dnf install -y \
+  wget \
+  tar \
+  zip \
+  gzip \
+  gcc \
+  make \
+  nano \
+  procps \
+  git \
+  python3-pip \
+  openssl-devel \
+  libffi-devel \
+  bzip2 \
+  rsync
+
+RUN dnf install -y \
+  php \
+  php-bz2 \
+  php-cli \
+  php-ctype \
+  php-curl \
+  php-dom \
+  php-exif \
+  php-fileinfo \
+  php-gd \
+  php-gmp \
+  php-iconv \
+  php-mbstring \
+  php-mysqli \
+  php-pdo \
+  php-pdo_dblib \
+  php-pdo_mysql \
+  php-phar \
+  php-session \
+  php-simplexml \
+  php-soap \
+  php-sodium \
+  php-tokenizer \
+  php-xml \
+  php-xmlreader \
+  php-xmlwriter \
+  php-xsl \
+  php-zip
+
+RUN curl -sL https://rpm.nodesource.com/setup_17.x | bash -
+
+RUN dnf install -y \
+  nodejs \
+  curl \
+  jq \
+  patch
+
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+    php composer-setup.php --install-dir=bin --filename=composer && \
+    php -r "unlink('composer-setup.php');"
+
+RUN curl -L "https://github.com/consolidation/Robo/releases/download/3.0.7/robo.phar" -o /tmp/robo.phar \
+    && chmod +x /tmp/robo.phar \
+    && mv /tmp/robo.phar /usr/local/bin/robo
+
+RUN pip3 install git-remote-codecommit
+RUN npm install -g gulp
+
+WORKDIR /root/
+
+RUN wget http://download.redis.io/redis-stable.tar.gz
+RUN tar xvzf redis-stable.tar.gz \
+  && cd redis-stable \
+  && make distclean \
+  && make BUILD_TLS=yes \
+  && make install \
+  && cd ../ \
+  && rm -rf redis-stable.tar.gz redis-stable
