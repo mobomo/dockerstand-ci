@@ -16,7 +16,8 @@ RUN apk add --no-cache \
     libc-dev \
     python3-dev \
     openssl-dev \
-    libffi-dev
+    libffi-dev \
+    git
 
 RUN pip3 install docker-compose
 
