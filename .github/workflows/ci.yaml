@@ -47,7 +47,7 @@ jobs:
               }
             }
 
-            return JSON.stringify(dockerfiles);
+            core.setOutput('matrix', JSON.stringify(dockerfiles));
 
   build:
     needs: generate-matrix
@@ -56,6 +56,9 @@ jobs:
       fail-fast: false
       matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
     steps:
+      - name: Print matrix
+        run: echo "${{ steps.set-matrix.outputs.matrix }}"
+    
       - name: Checkout repository
         uses: actions/checkout@v3
 
