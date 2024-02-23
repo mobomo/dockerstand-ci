@@ -43,24 +43,27 @@ jobs:
           for DOCKERFILE in ${{ steps.find_dockerfiles.outputs.dockerfiles }}; do
             CONTEXT_DIR=$(dirname "$DOCKERFILE")
             PHP_VERSION=$(basename "$CONTEXT_DIR")
-            VARIANT=$(basename "$DOCKERFILE" | cut -d. -f2)
-            
-            if [ -z "$VARIANT" ]; then
+            VARIANT=$(echo "$DOCKERFILE" | sed -n 's|.*Dockerfile\.\(.*\)|\1|p')
+
+            if [ "$VARIANT" == "Dockerfile" ]; then
               # This is the standard Dockerfile
               TAG_SUFFIX="latest"
             else
               # This is a Dockerfile with a specific variant
               TAG_SUFFIX="latest-$VARIANT"
             fi
-            
-            IMAGE_TAG="${PHP_VERSION}:${TAG_SUFFIX}"
+
+            # Replace "Dockerfile" suffix from TAG_SUFFIX if it's the standard Dockerfile
+            TAG_SUFFIX=$(echo "$TAG_SUFFIX" | sed 's/Dockerfile-//')
+
+            IMAGE_TAG="${PHP_VERSION}-${TAG_SUFFIX}"
             FULL_TAG="mobomo/docker-ci:$IMAGE_TAG"
             
             echo "Building $FULL_TAG for context $CONTEXT_DIR with $DOCKERFILE"
             
             docker buildx build \
               --platform linux/amd64,linux/arm64,linux/arm/v7 \
-              # --push \
+              --push \
               --tag "$FULL_TAG" \
               --file "$DOCKERFILE" \
               "$CONTEXT_DIR"
