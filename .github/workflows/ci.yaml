@@ -15,56 +15,64 @@ on:
   #     - 'PHP8.1/*'
 
 jobs:
-  build-and-push:
+  generate-matrix:
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+      - name: Generate matrix
+        id: set-matrix
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+
+            const directories = ['PHP7.4', 'PHP8.0', 'PHP8.1'];
+            const dockerfiles = [];
+
+            for (const directory of directories) {
+              const files = fs.readdirSync(directory);
+              for (const file of files) {
+                if (file.startsWith('Dockerfile')) {
+                  const variant = file === 'Dockerfile' ? 'latest' : file.replace('Dockerfile.', '');
+                  dockerfiles.push({
+                    context: directory,
+                    dockerfile: file,
+                    tag: `${directory}-${variant}`
+                  });
+                }
+              }
+            }
+
+            return JSON.stringify(dockerfiles);
+
+  build:
+    needs: generate-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{fromJson(needs.generate-matrix.outputs.matrix)}}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-      
-      # - name: Login to DockerHub
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      - name: Find Dockerfiles
-        id: find_dockerfiles
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
         run: |
-          DOCKERFILES=$(find . -type f -name 'Dockerfile' -or -name 'Dockerfile.*')
-          echo "::set-output name=dockerfiles::$DOCKERFILES"
-      
-      - name: Build and push images
-        run: |
-          for DOCKERFILE in ${{ steps.find_dockerfiles.outputs.dockerfiles }}; do
-            CONTEXT_DIR=$(dirname "$DOCKERFILE")
-            PHP_VERSION=$(basename "$CONTEXT_DIR")
-            VARIANT=$(echo "$DOCKERFILE" | sed -n 's|.*Dockerfile\.\(.*\)|\1|p')
-
-            if [ "$VARIANT" == "Dockerfile" ]; then
-              # This is the standard Dockerfile
-              TAG_SUFFIX="latest"
-            else
-              # This is a Dockerfile with a specific variant
-              TAG_SUFFIX="latest-$VARIANT"
-            fi
-
-            # Replace "Dockerfile" suffix from TAG_SUFFIX if it's the standard Dockerfile
-            TAG_SUFFIX=$(echo "$TAG_SUFFIX" | sed 's/Dockerfile-//')
-
-            IMAGE_TAG="${PHP_VERSION}-${TAG_SUFFIX}"
-            FULL_TAG="mobomo/docker-ci:$IMAGE_TAG"
-            
-            echo "Building $FULL_TAG for context $CONTEXT_DIR with $DOCKERFILE"
-            
-            docker buildx build \
-              --platform linux/amd64,linux/arm64 \
-              --push \
-              --tag "$FULL_TAG" \
-              --file "$DOCKERFILE" \
-              "$CONTEXT_DIR"
-          done
+          docker buildx build \
+            --platform linux/amd64,linux/arm64,linux/arm/v7 \
+            --push \
+            --tag mobomo/docker-ci:${{ matrix.tag }} \
+            --file ${{ matrix.context }}/${{ matrix.dockerfile }} \
+            ${{ matrix.context }}
