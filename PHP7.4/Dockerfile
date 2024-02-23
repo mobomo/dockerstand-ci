@@ -1,7 +1,9 @@
-# Alpine v3.12
-FROM docker:git
+# Alpine v3.13
+FROM docker:19.03.15-git
 
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
+
+RUN apk update --no-cache
 
 RUN apk add --no-cache \
     py3-pip \
@@ -14,9 +16,8 @@ RUN apk add --no-cache \
     libc-dev \
     python3-dev \
     libffi-dev \
-    openssl-dev
-
-RUN pip3 install docker-compose
+    openssl-dev \
+    docker-compose
 
 RUN apk add --no-cache \
     patch \
@@ -59,12 +60,12 @@ RUN apk add --no-cache \
 RUN rm -f /var/cache/apk/*
 
 RUN /usr/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
-    /usr/bin/php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
+    /usr/bin/php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \
     /usr/bin/php composer-setup.php --install-dir=bin --filename=composer && \
     /usr/bin/php -r "unlink('composer-setup.php');"
 
 ## Install Robo.
-RUN curl -L "https://github.com/consolidation/Robo/releases/download/3.0.7/robo.phar" -o /tmp/robo.phar \
+RUN curl -L "https://github.com/consolidation/Robo/releases/download/4.0.4/robo.phar" -o /tmp/robo.phar \
     && chmod +x /tmp/robo.phar \
     && mv /tmp/robo.phar /usr/local/bin/robo
 

@@ -1,5 +1,5 @@
-# Alpine v3.12
-FROM docker:22.04-cli
+# Alpine v3.19
+FROM docker:25.0.3-git
 
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
@@ -17,9 +17,7 @@ RUN apk add --no-cache \
     python3-dev \
     openssl-dev \
     libffi-dev \
-    git
-
-RUN pip3 install docker-compose
+    docker-compose
 
 RUN apk add --no-cache \
     php81 \
@@ -65,7 +63,7 @@ COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 RUN rm -f /var/cache/apk/*
 
 ## Install Robo.
-RUN curl -L "https://github.com/consolidation/Robo/releases/download/3.0.7/robo.phar" -o /tmp/robo.phar \
+RUN curl -L "https://github.com/consolidation/Robo/releases/download/4.0.4/robo.phar" -o /tmp/robo.phar \
     && chmod +x /tmp/robo.phar \
     && mv /tmp/robo.phar /usr/local/bin/robo
 

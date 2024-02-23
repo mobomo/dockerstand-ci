@@ -1,5 +1,5 @@
-# Alpine v3.12
-FROM docker:24.0-cli
+# Alpine v3.19
+FROM docker:25.0.3-git
 
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
@@ -17,7 +17,7 @@ RUN apk add --no-cache \
     python3-dev \
     openssl-dev \
     libffi-dev \
-    git
+    docker-compose
 
 COPY scripts/docker-compose.sh /usr/bin/docker-compose.sh
 RUN chmod +x /usr/bin/docker-compose.sh
@@ -59,7 +59,7 @@ RUN apk add --no-cache \
     jq \
     patch
 
-RUN ln -s /usr/bin/php82 /usr/bin/php
+RUN rm /usr/bin/php && ln -s /usr/bin/php82 /usr/bin/php
 
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 
