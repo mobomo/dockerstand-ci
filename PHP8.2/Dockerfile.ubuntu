@@ -1,0 +1,78 @@
+# Ubuntu 22.04 LTS (Jammy) as base
+FROM ubuntu:22.04
+
+# Set environment variables
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1 \
+    DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates gnupg
+
+# Co-installable PHP versions: PHP 5.6, PHP 7.x, PHP 8.x and most requested extensions are included.
+RUN echo "deb https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" >> /etc/apt/sources.list && \
+    echo "deb-src https://ppa.launchpadcontent.net/ondrej/php/ubuntu jammy main" >> /etc/apt/sources.list 
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip \
+    bash \
+    make \
+    rsync \
+    rustc \
+    cargo \
+    gcc \
+    libc6-dev \
+    python3-dev \
+    libssl-dev \
+    libffi-dev \
+    docker-compose \
+    php8.2 \
+    php8.2-bcmath \
+    php8.2-bz2 \
+    php8.2-cli \
+    php8.2-common \
+    php8.2-curl \
+    php8.2-dom \
+    php8.2-exif \
+    php8.2-fileinfo \
+    php8.2-gd \
+    php8.2-gmp \
+    php8.2-iconv \
+    php8.2-mbstring \
+    php8.2-mysqli \
+    php8.2-pdo \
+    php8.2-pdo-dblib \
+    php8.2-pdo-mysql \
+    php8.2-phar \
+    #php8.2-session \
+    php8.2-simplexml \
+    php8.2-soap \
+    #php8.2-sodium \
+    php8.2-tokenizer \
+    php8.2-xml \
+    php8.2-xmlreader \
+    php8.2-xmlwriter \
+    php8.2-xsl \
+    php8.2-zip \
+    nodejs \
+    npm \
+    curl \
+    jq \
+    patch \
+    git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+# Copy scripts
+COPY scripts/docker-compose.sh /usr/bin/docker-compose.sh
+RUN chmod +x /usr/bin/docker-compose.sh
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install Robo
+RUN curl -L "https://github.com/consolidation/Robo/releases/download/4.0.4/robo.phar" -o /usr/local/bin/robo && \
+    chmod +x /usr/local/bin/robo
+
+ENTRYPOINT ["/bin/bash"]
