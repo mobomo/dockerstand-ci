@@ -23,7 +23,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
       - name: Generate matrix
-        id: set-matrix
+        id: set_matrix
         uses: actions/github-script@v7
         with:
           script: |
