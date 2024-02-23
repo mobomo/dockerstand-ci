@@ -35,14 +35,15 @@ jobs:
             const directories = getDirectories('./');
 
             let matrix = [];
-            let tagVersion = process.env.GITHUB_REF_NAME || 'latest';
+            let refName = process.env.GITHUB_REF_NAME;
+            let tagVersion = (refName && refName !== 'master') ? refName : 'latest';
 
             directories.forEach(directory => {
               const files = fs.readdirSync(directory);
               files.forEach(file => {
                 if (file.startsWith('Dockerfile')) {
                   let baseTag = path.basename(directory).toLowerCase().replace('php', '');
-                  let variant = file === 'Dockerfile' ? '' : file.replace('Dockerfile.', '-') + 'latest';
+                  let variant = file === 'Dockerfile' ? '' : `-${file.replace('Dockerfile.', '')}`;
                   let tags = [`${baseTag}${variant}-latest`];
                   if (tagVersion !== 'latest') {
                     // If this is a tag push, also add a version-specific tag
