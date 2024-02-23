@@ -1,5 +1,5 @@
 # Alpine v3.12
-FROM docker:22.04-cli
+FROM docker:24.0-cli
 
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
@@ -19,37 +19,38 @@ RUN apk add --no-cache \
     libffi-dev \
     git
 
-RUN pip3 install docker-compose
+COPY scripts/docker-compose.sh /usr/bin/docker-compose.sh
+RUN chmod +x /usr/bin/docker-compose.sh
 
 RUN apk add --no-cache \
-    php8 \
-    php8-bcmath \
-    php8-bz2 \
-    php8-cli \
-    php8-ctype \
-    php8-curl \
-    php8-dom \
-    php8-exif \
-    php8-fileinfo \
-    php8-gd \
-    php8-gmp \
-    php8-iconv \
-    php8-mbstring \
-    php8-mysqli \
-    php8-pdo \
-    php8-pdo_dblib \
-    php8-pdo_mysql \
-    php8-phar \
-    php8-session \
-    php8-simplexml \
-    php8-soap \
-    php8-sodium \
-    php8-tokenizer \
-    php8-xml \
-    php8-xmlreader \
-    php8-xmlwriter \
-    php8-xsl \
-    php8-zip
+    php82 \
+    php82-bcmath\
+    php82-bz2 \
+    php82-cli \
+    php82-ctype \
+    php82-curl \
+    php82-dom \
+    php82-exif \
+    php82-fileinfo \
+    php82-gd \
+    php82-gmp \
+    php82-iconv \
+    php82-mbstring \
+    php82-mysqli \
+    php82-pdo \
+    php82-pdo_dblib \
+    php82-pdo_mysql \
+    php82-phar \
+    php82-session \
+    php82-simplexml \
+    php82-soap \
+    php82-sodium \
+    php82-tokenizer \
+    php82-xml \
+    php82-xmlreader \
+    php82-xmlwriter \
+    php82-xsl \
+    php82-zip
 
 RUN apk add --no-cache \
     nodejs \
@@ -57,6 +58,8 @@ RUN apk add --no-cache \
     curl \
     jq \
     patch
+
+RUN ln -s /usr/bin/php82 /usr/bin/php
 
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 

@@ -1,5 +1,5 @@
 # Alpine v3.12
-FROM docker:20.10-cli
+FROM docker:22.04-cli
 
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
