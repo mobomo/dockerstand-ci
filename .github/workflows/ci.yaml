@@ -51,7 +51,7 @@ jobs:
             core.setOutput('matrix', JSON.stringify(matrix));
       - name: Print matrix
         run: echo "${{ steps.set_matrix.outputs.matrix }}"
-      - name: Print matrix
+      - name: Print matrix jsobject
         run: echo "${{ fromJson(steps.set_matrix.outputs.matrix) }}"
   build:
     needs: generate_matrix
