@@ -25,24 +25,41 @@ jobs:
           script: |
             const fs = require('fs');
             const path = require('path');
-
-            const directories = ['PHP7.4', 'PHP8.0', 'PHP8.1'];
+            
+            // Function to check if the path is a directory and doesn't start with a dot
+            const isDirectory = source => fs.lstatSync(source).isDirectory() && !path.basename(source).startsWith('.');
+            
+            // Get all directories in the current directory (excluding ones starting with a dot)
+            const getDirectories = source =>
+              fs.readdirSync(source).map(name => path.join(source, name)).filter(isDirectory);
+            
+            // Get directories for the matrix generation
+            const directories = getDirectories('./');
+            
             let matrix = [];
-
-            for (const directory of directories) {
+            
+            directories.forEach(directory => {
               const files = fs.readdirSync(directory);
-              for (const file of files) {
+              files.forEach(file => {
                 if (file.startsWith('Dockerfile')) {
-                  const variant = file === 'Dockerfile' ? 'latest' : file.replace('Dockerfile.', '');
+                  let baseTag = path.basename(directory).toLowerCase().replace('php', '');
+                  let variant = file === 'Dockerfile' ? 'latest' : file.replace('Dockerfile.', '');
+                  let tag = `${baseTag}-${variant}`;
+            
+                  // If the file is not the default Dockerfile, append `-latest` to the variant
+                  if (file !== 'Dockerfile') {
+                    tag = `${baseTag}-${variant}-latest`;
+                  }
+            
                   matrix.push({
                     context: directory,
                     dockerfile: file,
-                    tag: `${directory}-${variant}`.toLowerCase().replace('php', '')
+                    tag: tag
                   });
                 }
-              }
-            }
-
+              });
+            });
+            
             // Set the matrix output to a properly formatted JSON string
             core.setOutput('matrix', JSON.stringify({ include: matrix }));
       - name: Print matrix
@@ -81,8 +98,8 @@ jobs:
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: docker/build-push-action@v5
         with:
-          context: ${{ matrix.context }}
-          file: ${{ matrix.dockerfile }}
+          context: ./${{ matrix.context }}
+          file: ${{ matrix.context }}/${{ matrix.dockerfile }}
           platforms: ${{ env.PLATFORMS }}
           push: false
           tags: ${{ matrix.tag }}
