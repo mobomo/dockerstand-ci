@@ -46,7 +46,7 @@ jobs:
                 if (file.startsWith('Dockerfile')) {
                   let baseTag = path.basename(directory).toLowerCase().replace('php', '');
                   let variant = file === 'Dockerfile' ? '' : `-${file.replace('Dockerfile.', '')}`;
-                  let tags = [`${baseTag}${variant}-latest`];
+                  let tags = [`${repoPrefix}:${baseTag}${variant}-latest`];
                   if (tagVersion !== 'latest') {
                     // If this is a tag push, also add a version-specific tag
                     tags.push(`${repoPrefix}:${baseTag}${variant}-${tagVersion}`);
