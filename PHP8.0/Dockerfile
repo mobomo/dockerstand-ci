@@ -1,5 +1,5 @@
-# Alpine v3.12
-FROM docker:22.04-cli
+# Alpine v3.13
+FROM docker:19.03.15-git
 
 ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1
 
@@ -17,9 +17,8 @@ RUN apk add --no-cache \
     python3-dev \
     openssl-dev \
     libffi-dev \
-    git
-
-RUN pip3 install docker-compose
+    git \
+    docker-compose
 
 RUN apk add --no-cache \
     php8 \
