@@ -91,7 +91,7 @@ jobs:
           file: ${{ matrix.dockerfile }}
           platforms: ${{ env.PLATFORMS }}
           push: true
-          tags: ${{ matrix.tag }}
+          tags: ${{ matrix.tags }}
       - name: Build
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
         uses: docker/build-push-action@v5
