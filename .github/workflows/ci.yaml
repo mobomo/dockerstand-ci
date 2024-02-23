@@ -62,7 +62,7 @@ jobs:
             echo "Building $FULL_TAG for context $CONTEXT_DIR with $DOCKERFILE"
             
             docker buildx build \
-              --platform linux/amd64,linux/arm64,linux/arm/v7 \
+              --platform linux/amd64,linux/arm64 \
               --push \
               --tag "$FULL_TAG" \
               --file "$DOCKERFILE" \
