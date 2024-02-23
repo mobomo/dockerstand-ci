@@ -1,0 +1,67 @@
+name: Build and Push Docker Images
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'PHP7.4/*'
+      - 'PHP8.0/*'
+      - 'PHP8.1/*'
+  pull_request:
+    paths:
+      - 'PHP7.4/*'
+      - 'PHP8.0/*'
+      - 'PHP8.1/*'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      
+      # - name: Login to DockerHub
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Find Dockerfiles
+        id: find_dockerfiles
+        run: |
+          DOCKERFILES=$(find . -type f -name 'Dockerfile' -or -name 'Dockerfile.*')
+          echo "::set-output name=dockerfiles::$DOCKERFILES"
+      
+      - name: Build and push images
+        run: |
+          for DOCKERFILE in ${{ steps.find_dockerfiles.outputs.dockerfiles }}; do
+            CONTEXT_DIR=$(dirname "$DOCKERFILE")
+            PHP_VERSION=$(basename "$CONTEXT_DIR")
+            VARIANT=$(basename "$DOCKERFILE" | cut -d. -f2)
+            
+            if [ -z "$VARIANT" ]; then
+              # This is the standard Dockerfile
+              TAG_SUFFIX="latest"
+            else
+              # This is a Dockerfile with a specific variant
+              TAG_SUFFIX="latest-$VARIANT"
+            fi
+            
+            IMAGE_TAG="${PHP_VERSION}:${TAG_SUFFIX}"
+            FULL_TAG="mobomo/docker-ci:$IMAGE_TAG"
+            
+            echo "Building $FULL_TAG for context $CONTEXT_DIR with $DOCKERFILE"
+            
+            docker buildx build \
+              --platform linux/amd64,linux/arm64,linux/arm/v7 \
+              # --push \
+              --tag "$FULL_TAG" \
+              --file "$DOCKERFILE" \
+              "$CONTEXT_DIR"
+          done
