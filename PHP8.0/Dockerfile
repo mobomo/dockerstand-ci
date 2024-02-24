@@ -61,6 +61,8 @@ COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 
 RUN rm -f /var/cache/apk/*
 
+RUN npm install -g gulp
+
 ## Install Robo.
 RUN curl -L "https://github.com/consolidation/Robo/releases/download/3.0.7/robo.phar" -o /tmp/robo.phar \
     && chmod +x /tmp/robo.phar \

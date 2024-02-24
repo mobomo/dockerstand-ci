@@ -17,7 +17,8 @@ RUN apk add --no-cache \
     python3-dev \
     openssl-dev \
     libffi-dev \
-    docker-compose
+    docker-compose \
+    git
 
 RUN apk add --no-cache \
     php81 \
@@ -61,6 +62,8 @@ RUN ln -s /usr/bin/php81 /usr/bin/php
 COPY --from=composer/composer /usr/bin/composer /usr/bin/composer
 
 RUN rm -f /var/cache/apk/*
+
+RUN npm install -g gulp
 
 ## Install Robo.
 RUN curl -L "https://github.com/consolidation/Robo/releases/download/4.0.4/robo.phar" -o /tmp/robo.phar \

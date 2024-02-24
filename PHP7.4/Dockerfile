@@ -17,7 +17,8 @@ RUN apk add --no-cache \
     python3-dev \
     libffi-dev \
     openssl-dev \
-    docker-compose
+    docker-compose \
+    git
 
 RUN apk add --no-cache \
     patch \
@@ -50,7 +51,6 @@ RUN apk add --no-cache \
     php7-zip \
     mariadb-client
 
-
 RUN apk add --no-cache \
     nodejs \
     npm \
@@ -58,6 +58,8 @@ RUN apk add --no-cache \
     jq
 
 RUN rm -f /var/cache/apk/*
+
+RUN npm install -g gulp
 
 RUN /usr/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
     /usr/bin/php -r "if (hash_file('sha384', 'composer-setup.php') === 'dac665fdc30fdd8ec78b38b9800061b4150413ff2e3b6f88543c636f7cd84f6db9189d43a81e5503cda447da73c7e5b6') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;" && \

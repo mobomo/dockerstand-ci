@@ -14,6 +14,8 @@ RUN echo "deb https://download.docker.com/linux/ubuntu jammy stable" >> /etc/apt
 
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C 7EA0A9C3F273FCD8
 
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+
 # Install dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     python3-pip \
@@ -59,7 +61,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     php8.2-xsl \
     php8.2-zip \
     nodejs \
-    npm \
     curl \
     jq \
     patch \
