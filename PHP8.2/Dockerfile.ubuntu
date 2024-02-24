@@ -67,6 +67,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
+RUN npm install -g gulp
+
 # Copy scripts
 COPY scripts/docker-compose.sh /usr/bin/docker-compose.sh
 RUN chmod +x /usr/bin/docker-compose.sh
