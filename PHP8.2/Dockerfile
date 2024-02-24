@@ -17,7 +17,8 @@ RUN apk add --no-cache \
     python3-dev \
     openssl-dev \
     libffi-dev \
-    docker-compose
+    docker-compose \
+    git
 
 COPY scripts/docker-compose.sh /usr/bin/docker-compose.sh
 RUN chmod +x /usr/bin/docker-compose.sh
