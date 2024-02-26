@@ -23,7 +23,8 @@ RUN dnf install -y \
   openssl-devel \
   libffi-devel \
   bzip2 \
-  rsync
+  rsync \
+  mariadb-client
 
 RUN dnf install -y \
   php \

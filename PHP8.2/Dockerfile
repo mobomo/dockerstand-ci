@@ -18,6 +18,7 @@ RUN apk add --no-cache \
     openssl-dev \
     libffi-dev \
     docker-compose \
+    mariadb-client \
     git
 
 COPY scripts/docker-compose.sh /usr/bin/docker-compose.sh

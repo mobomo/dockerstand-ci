@@ -17,8 +17,9 @@ RUN apk add --no-cache \
     python3-dev \
     openssl-dev \
     libffi-dev \
-    git \
-    docker-compose
+    docker-compose \
+    mariadb-client \
+    git
 
 RUN apk add --no-cache \
     php8 \

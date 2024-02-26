@@ -18,6 +18,7 @@ RUN apk add --no-cache \
     libffi-dev \
     openssl-dev \
     docker-compose \
+    mariadb-client \
     git
 
 RUN apk add --no-cache \
