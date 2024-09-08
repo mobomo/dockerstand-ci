@@ -1,0 +1,85 @@
+# Ubuntu 22.04 LTS (Jammy) as base
+FROM ubuntu:24.04
+
+# Set environment variables
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST=1 \
+    DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates gnupg curl
+
+# Co-installable PHP versions: PHP 5.6, PHP 7.x, PHP 8.x and most requested extensions are included.
+RUN echo "deb https://download.docker.com/linux/ubuntu noble stable" >> /etc/apt/sources.list && \
+    echo "deb https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" >> /etc/apt/sources.list && \
+    echo "deb-src https://ppa.launchpadcontent.net/ondrej/php/ubuntu noble main" >> /etc/apt/sources.list 
+
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 4F4EA0AAE5267A6C 7EA0A9C3F273FCD8
+
+RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
+
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3-pip \
+    bash \
+    make \
+    rsync \
+    rustc \
+    cargo \
+    gcc \
+    libc6-dev \
+    python3-dev \
+    libssl-dev \
+    libffi-dev \
+    mariadb-client \
+    docker-ce-cli \
+    docker-buildx-plugin \
+    docker-compose-plugin \
+    php8.3 \
+    php8.3-bcmath \
+    php8.3-bz2 \
+    php8.3-cli \
+    php8.3-common \
+    php8.3-curl \
+    php8.3-dom \
+    php8.3-exif \
+    php8.3-fileinfo \
+    php8.3-gd \
+    php8.3-gmp \
+    php8.3-iconv \
+    php8.3-mbstring \
+    php8.3-mysqli \
+    php8.3-pdo \
+    php8.3-pdo-dblib \
+    php8.3-pdo-mysql \
+    php8.3-phar \
+    #php8.3-session \
+    php8.3-simplexml \
+    php8.3-soap \
+    #php8.2-sodium \
+    php8.3-tokenizer \
+    php8.3-xml \
+    php8.3-xmlreader \
+    php8.3-xmlwriter \
+    php8.3-xsl \
+    php8.3-zip \
+    nodejs \
+    curl \
+    jq \
+    patch \
+    git && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN npm install -g gulp
+
+# Copy scripts
+COPY scripts/docker-compose.sh /usr/bin/docker-compose.sh
+RUN chmod +x /usr/bin/docker-compose.sh
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install Robo
+RUN curl -L "https://github.com/consolidation/Robo/releases/download/4.0.4/robo.phar" -o /usr/local/bin/robo && \
+    chmod +x /usr/local/bin/robo
+
+ENTRYPOINT ["/bin/bash"]
